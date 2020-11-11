@@ -1,0 +1,20 @@
+<div
+  [class.popup_hidden]="!popup.text"
+  class="popup"
+>
+  <div
+    [ngClass]="{
+      'popup__card_danger': popup.type === 'danger',
+      'popup__card_success': popup.type === 'success'
+    }"
+    class="popup__card"
+  >
+    <div class="popup__text">{{popup.text}}</div>
+    <button
+      class="popup__btn btn btn-info"
+      (click)="close()"
+    >
+      Закрыть
+    </button>
+  </div>
+</div>

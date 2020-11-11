@@ -1,0 +1,71 @@
+<div class="d-flex justify-content-between">
+  <h1>Корзина</h1>
+  <button
+    *ngIf="cartService.items?.length"
+    class="btn btn-link text-secondary align-self-end"
+    (click)="clear()"
+  >
+    Очистить корзину
+  </button>
+</div>
+
+<div *ngIf="cartService.items?.length">
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Название</th>
+          <th scope="col">Цвет</th>
+          <th scope="col">Формат</th>
+          <th scope="col">Цена</th>
+          <th scope="col">Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of cartService.items">
+          <th class="text-primary" scope="row">{{(item.loaded ? item.name : 'Загрузка товара...') | titlecase}}</th>
+          <td>{{item.attr?.color | titlecase}}</td>
+          <td>{{item.attr?.format | uppercase}}</td>
+          <td class="text-success">{{item.price ? item.price + ' $' : ''}}</td>
+          <td>
+            <button
+              *ngIf="item.loaded"
+              class="btn btn-link text-danger p-0"
+              (click)="remove(item)"
+            >
+              Удалить
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Итого</h3>
+
+  <div class="row">
+    <div class="col-sm-4 col-md-3 d-flex flex-column justify-content-between">
+      <p class="d-flex justify-content-between m-0">
+        <span>Товаров:</span> <strong>{{cartService.items.length}}</strong>
+      </p>
+      <p class="d-flex justify-content-between m-0">
+        <span>Сумма:</span> <strong>{{cartService.items | sumitems}} $</strong>
+      </p>
+    </div>
+    <div class="col"></div>
+    <div class="col-12 col-sm-6">
+      <button
+        [disabled]="!cartService.ready"
+        class="btn btn-success w-100 h-100"
+        (click)="order()"
+      >
+        Оформить заказ
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="!cartService.items?.length">
+  <p>Корзина пустая. Добавьте товары в <a [routerLink]="['/shop']">магазине</a>.</p>
+</div>

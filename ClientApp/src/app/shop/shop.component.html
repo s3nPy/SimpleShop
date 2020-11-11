@@ -1,0 +1,40 @@
+<h1>Shop</h1>
+
+<div class="row">
+
+  <div *ngFor="let item of items" class="col-md-4 col-sm-6">
+    <div class="card my-3">
+      <div class="card-header">
+        <div class="row">
+          <div class="col text-primary">{{item.name | titlecase}}</div>
+          <div class="col text-success">{{item.price}} $</div>
+        </div>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col">Цвет</div>
+            <div class="col">{{item.attr.color | titlecase}}</div>
+          </div>
+        </li>
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col">Формат</div>
+            <div class="col">{{item.attr.format | uppercase}}</div>
+          </div>
+        </li>
+      </ul>
+      <button
+        [ngClass]="{
+          'btn-success': item.inCart,
+          'btn-primary': !item.inCart
+        }"
+        class="btn"
+        [disabled]="item.inCart"
+        (click)="addInCart(item.id)"
+      >
+        {{item.inCart ? 'В корзине' : 'В корзину'}}
+      </button>
+    </div>
+  </div>
+</div>

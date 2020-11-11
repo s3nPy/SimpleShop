@@ -1,0 +1,23 @@
+.card {
+  box-shadow: 0 2px 7px -2px #333;
+  transition: all .8s ease;
+
+  &:hover {
+    transform: translate(0, -6px);
+    box-shadow: 0 8px 9px -1px #ccc;
+  }
+
+  &-header {
+    font-weight: bolder;
+  }
+}
+
+.list-group {
+  font-size: 0.9rem;
+
+  &-item {
+    .col:first-of-type {
+      font-weight: bolder;
+    }
+  }
+}

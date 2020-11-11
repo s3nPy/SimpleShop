@@ -1,0 +1,366 @@
+<div class="order">
+  <div class="order__title">Оформление заказа</div>
+  <div class="order__bar bar">
+    <div [class.bar__step_active]="step === 1" class="bar__step">1</div>
+    <div class="bar__delimiter"></div>
+    <div [class.bar__step_active]="step === 2" class="bar__step">2</div>
+    <div class="bar__delimiter"></div>
+    <div [class.bar__step_active]="step === 3" class="bar__step">3</div>
+    <div class="bar__delimiter"></div>
+    <div [class.bar__step_active]="step === 4" class="bar__step">4</div>
+    <div class="bar__delimiter"></div>
+    <div [class.bar__step_active]="step === 5" class="bar__step">5</div>
+    <div [class.bar__step_active]="step === 6" class="bar__step">6</div>
+  </div>
+
+  <div class="order__body">
+    <div class="order__subtitle">
+      <h5 class="mb-3">{{title}}</h5>
+    </div>
+
+    <form [formGroup]="form">
+      <div
+        *ngIf="step === 1 || step === 5"
+        formGroupName="step01"
+        class="order__step"
+      >
+        <div class="form-group row">
+          <label for="name" class="col-sm-3 col-form-label">Имя</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              placeholder="Имя"
+              formControlName="name"
+            >
+            <div
+              *ngIf="form.get('step01.name').touched && form.get('step01.name').errors?.required"
+              class="validation-error"
+            >
+              Введите имя!
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="phone" class="col-sm-3 col-form-label">Телефон</label>
+          <div class="col-sm-9">
+            <input
+              type="phone"
+              class="form-control"
+              id="phone"
+              placeholder="+7 (950) 88-88-88"
+              formControlName="phone"
+            >
+            <div
+              *ngIf="form.get('step01.phone').touched && (
+                form.get('step01.phone').errors?.required || form.get('step01.phone').errors?.pattern)"
+              class="validation-error"
+            >
+              Введите телефон ! (Пример: 8 800 555 35 35)
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-3">Согласие</div>
+          <div class="col-sm-9">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="agree"
+                formControlName="agree"
+              >
+              <label class="form-check-label" for="agree">
+                <small>Даю согласие на обработку персональных данных</small>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="step === 2 || step === 5"
+        formGroupName="step02"
+        class="order__step"
+      >
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Название</th>
+                <th scope="col">Цвет</th>
+                <th scope="col">Формат</th>
+                <th scope="col">Цена</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of cartService.items">
+                <th class="text-primary" scope="row">{{(item.loaded ? item.name : 'Загрузка товара...') | titlecase}}</th>
+                <td>{{item.attr?.color | titlecase}}</td>
+                <td>{{item.attr?.format | uppercase}}</td>
+                <td class="text-success">{{item.price ? item.price + ' $' : ''}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <h3>Итого</h3>
+          </div>
+          <div class="col-sm-4 col-md-3 d-flex flex-column justify-content-between">
+            <p class="d-flex justify-content-between m-0">
+              <span>Товаров:</span> <strong>{{cartService.items.length}}</strong>
+            </p>
+            <p class="d-flex justify-content-between m-0">
+              <span>Сумма:</span> <strong>{{cartService.items | sumitems}} $</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-3">Проверка</div>
+          <div class="col-sm-9">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="check"
+                formControlName="check"
+              >
+              <label class="form-check-label" for="check">
+                <small>Все верно</small>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div
+        *ngIf="step === 3 || step === 5"
+        formGroupName="step03"
+        class="order__step"
+      >
+        <div class="form-group row">
+          <label for="snils" class="col-sm-3 col-form-label">Снилс</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              id="snils"
+              placeholder="СНИЛС"
+              formControlName="snils"
+            >
+            <div
+              *ngIf="form.get('step03.snils').touched && (
+                form.get('step03.snils').errors?.required || form.get('step03.snils').errors?.pattern)"
+              class="validation-error"
+            >
+              Введите СНИЛС! (Пример: 111-222-333 44)
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-3">Ваше фото</div>
+          <div class="col-sm-9">
+            <div class="custom-file">
+              <input
+                type="file"
+                accept=".png, .jpg, .jpeg"
+                class="custom-file-input"
+                id="photo"
+                (change)="uploadFile($event)"
+                [disabled]="step === 5"
+              >
+              <label class="custom-file-label" for="photo">
+                {{form.get('step03.photo').value?.name || 'Выберите фото'}}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="step === 4 || step === 5"
+        formGroupName="step04"
+        class="order__step"
+      >
+        <div class="form-group row">
+          <div class="col-sm-3">Выбор доставки</div>
+          <div class="col-sm-9">
+            <select class="custom-select" formControlName="delivery">
+              <option value="" selected disabled>Выберите тип доставки</option>
+              <option value="self">Самовывоз</option>
+              <option value="mail">Доставка почтой</option>
+            </select>
+          </div>
+        </div>
+
+        <div
+          formGroupName="self"
+          *ngIf="form.get('step04.delivery').value === 'self'"
+          class="form-group row"
+        >
+          <div class="col-sm-3">Город</div>
+          <div class="col-sm-9">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="msk"
+                name="city"
+                class="custom-control-input"
+                value="moscow"
+                formControlName="city"
+              >
+              <label class="custom-control-label" for="msk">Москва</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="vrz"
+                name="city"
+                class="custom-control-input"
+                value="voronezh"
+                formControlName="city"
+              >
+              <label class="custom-control-label" for="vrz">Воронеж</label>
+            </div>
+          </div>
+        </div>
+
+        <div
+          formGroupName="mail"
+          *ngIf="form.get('step04.delivery').value === 'mail'"
+        >
+          <div class="form-group row">
+            <label for="name2" class="col-sm-3 col-form-label">Имя</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="name2"
+                placeholder="Имя"
+                formControlName="name2"
+              >
+              <div
+                *ngIf="form.get('step04.mail.name2').touched && (
+                  form.get('step04.mail.name2').errors?.required)"
+                class="validation-error"
+              >
+                Введите имя!
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="phone" class="col-sm-3 col-form-label">Телефон</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="phone"
+                placeholder="+7 (950) 88-88-88"
+                formControlName="phone"
+              >
+              <div
+                *ngIf="form.get('step04.mail.phone').touched && (
+                  form.get('step04.mail.phone').errors?.required ||
+                  form.get('step04.mail.phone').errors?.pattern)"
+                class="validation-error"
+              >
+                Введите телефон ! (Пример: 8 800 555 35 35)
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="index" class="col-sm-3 col-form-label">Индекс</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="index"
+                placeholder="305705"
+                formControlName="index"
+              >
+              <div
+                *ngIf="form.get('step04.mail.index').touched && (
+                  form.get('step04.mail.index').errors?.required ||
+                  form.get('step04.mail.index').errors?.pattern)"
+                class="validation-error"
+              >
+                Введите почтовый индекс! (Пример: 305705)
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="address" class="col-sm-3 col-form-label">Адрес</label>
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                placeholder="Адрес"
+                formControlName="address"
+              >
+              <div
+                *ngIf="form.get('step04.mail.address').touched &&
+                      form.get('step04.mail.address').errors?.required"
+                class="validation-error"
+              >
+                Введите адрес!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="order__controls">
+      <div class="row">
+        <div class="col-sm-3">
+          <button
+            *ngIf="step !== 5"
+            class="btn btn-success"
+            type="button"
+            (click)="next()"
+            [disabled]="!isCurrentStepValid()"
+          >
+            Далее
+          </button>
+
+          <button
+            *ngIf="step === 5"
+            class="btn btn-success"
+            (click)="submit()"
+            [disabled]="submitted"
+          >
+            Оформить заказ
+          </button>
+        </div>
+
+        <div class="col-9">
+          <div
+            *ngIf="submitted"
+            class="progress"
+            style="height: 100%"
+          >
+            <div
+              class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+              role="progressbar"
+              [attr.aria-valuenow]="progress"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [ngStyle]="{'width': progress+'%'}"
+            >
+              Идет отправка...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
